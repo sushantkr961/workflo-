@@ -1,4 +1,3 @@
-import { RootState } from "@/lib/store";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 
 interface Product {
@@ -27,6 +26,7 @@ export const fetchProducts = createAsyncThunk(
   async () => {
     const response = await fetch("https://fakestoreapi.com/products");
     const data = await response.json();
+    // console.log(666666, data);
     return data as Product[];
   }
 );
@@ -55,64 +55,3 @@ const productsSlice = createSlice({
 });
 
 export default productsSlice.reducer;
-
-// export const selectAllProducts = (state: RootState) => state.products.products;
-// export const getProductsStatus = (state: RootState) => state.products.status;
-// export const getProductsError = (state: RootState) => state.products.error;
-
-
-// import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-// import { RootState } from './store';
-
-// interface Product {
-//   id: number;
-//   title: string;
-//   price: number;
-//   description: string;
-//   category: string;
-//   image: string;
-// }
-
-// interface ProductsState {
-//   products: Product[];
-//   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-//   error: string | null;
-// }
-
-// const initialState: ProductsState = {
-//   products: [],
-//   status: 'idle',
-//   error: null,
-// };
-
-// export const fetchProducts = createAsyncThunk('products/fetchProducts', async () => {
-//   const response = await fetch('https://fakestoreapi.com/products');
-//   const data = await response.json();
-//   return data as Product[];
-// });
-
-// const productsSlice = createSlice({
-//   name: 'products',
-//   initialState,
-//   reducers: {},
-//   extraReducers: (builder) => {
-//     builder
-//       .addCase(fetchProducts.pending, (state) => {
-//         state.status = 'loading';
-//       })
-//       .addCase(fetchProducts.fulfilled, (state, action: PayloadAction<Product[]>) => {
-//         state.status = 'succeeded';
-//         state.products = action.payload;
-//       })
-//       .addCase(fetchProducts.rejected, (state, action) => {
-//         state.status = 'failed';
-//         state.error = action.error.message || 'Failed to fetch products';
-//       });
-//   },
-// }); s
-
-// export default productsSlice.reducer;
-
-// export const selectAllProducts = (state: RootState) => state.products.products;
-// export const getProductsStatus = (state: RootState) => state.products.status;
-// export const getProductsError = (state: RootState) => state.products.error;
