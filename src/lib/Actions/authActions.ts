@@ -19,14 +19,17 @@ interface ApiResponse {
 }
 
 // Helper function to handle API requests
-const apiRequest = async (url: string, data: object): Promise<ApiResponse> => {
+const apiRequest = async (
+  url: string,
+  data: object
+): Promise<{ data: ApiResponse; status: number }> => {
   try {
     const response = await axios.post<ApiResponse>(url, data, {
       headers: {
         "Content-Type": "application/json",
       },
     });
-    return response.data;
+    return { data: response.data, status: response.status };
   } catch (error: any) {
     if (axios.isAxiosError(error) && error.response && error.response.data) {
       throw new Error(error.response.data.message);
@@ -36,33 +39,43 @@ const apiRequest = async (url: string, data: object): Promise<ApiResponse> => {
 };
 
 // Define the login action
-export const loginUser = createAsyncThunk<ApiResponse, LoginPayload>(
-  "auth/loginUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const data = await apiRequest("/api/login", userData);
+export const loginUser = createAsyncThunk<
+  ApiResponse,
+  LoginPayload,
+  { rejectValue: string }
+>("auth/loginUser", async (userData, { rejectWithValue }) => {
+  try {
+    const { data, status } = await apiRequest("/api/login", userData);
+    // console.log("Login Data:", data);
+    // console.log("Status Code:", status);
 
-      // Store the token in localStorage if available
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-
-      return data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    if (status === 200 && data.token) {
+      localStorage.setItem("token", data.token);
     }
+
+    return data;
+  } catch (error: any) {
+    return rejectWithValue(error.message);
   }
-);
+});
 
 // Define the registration action
-export const registerUser = createAsyncThunk<ApiResponse, RegisterPayload>(
-  "auth/registerUser",
-  async (userData, { rejectWithValue }) => {
-    try {
-      const data = await apiRequest("/api/register", userData);
-      return data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+export const registerUser = createAsyncThunk<
+  ApiResponse,
+  RegisterPayload,
+  { rejectValue: string }
+>("auth/registerUser", async (userData, { rejectWithValue }) => {
+  try {
+    const { data, status } = await apiRequest("/api/register", userData);
+    console.log("Register Data:", data);
+    console.log("Status Code:", status);
+
+    if (status === 201) {
+      console.log("Registration successful");
     }
+
+    return data;
+  } catch (error: any) {
+    return rejectWithValue(error.message);
   }
-);
+});

@@ -12,7 +12,7 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState("");
   const router = useRouter();
   const dispatch = useAppDispatch<AppDispatch>();
-  const { status, error } = useAppSelector((state: RootState) => {
+  const { loginError, loginStatus } = useAppSelector((state: RootState) => {
     console.log("login Data", state);
     return state.auth;
   });
@@ -23,10 +23,10 @@ const Login: React.FC = () => {
   };
 
   useEffect(() => {
-    if (status === "succeeded") {
+    if (loginStatus === "succeeded") {
       router.push("/");
     }
-  }, [status, router]);
+  }, [loginStatus, router]);
 
   return (
     <>
@@ -94,10 +94,10 @@ const Login: React.FC = () => {
             <div>
               <button
                 type="submit"
-                disabled={status === "loading"}
+                disabled={loginStatus === "loading"}
                 className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
               >
-                {status === "loading" ? "Logging in..." : "Login"}
+                {loginStatus === "loading" ? "Logging in..." : "Login"}
               </button>
             </div>
           </form>
@@ -112,7 +112,7 @@ const Login: React.FC = () => {
             </Link>
           </p>
         </div>
-        {status === "failed" && <p style={{ color: "red" }}>{error}</p>}
+        {loginStatus === "failed" && <p style={{ color: "red" }}>{loginError}</p>}
       </div>
     </>
   );
